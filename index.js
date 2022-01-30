@@ -78,6 +78,7 @@ class Select2 extends Component {
             }
         });
         this.setState({ data, show: false, keyword: '', selectedItem: preSelectedItem });
+        this.props.onCancel && this.props.onCancel();
     }
 
     onItemSelected = (item, isSelectSingle) => {
@@ -206,7 +207,7 @@ class Select2 extends Component {
                                         selectedObjectItems.push(item);
                                     })
                                     onSelect && onSelect(selectedIds, selectedObjectItems);
-                                    this.setState({ show: false, keyword: '', preSelectedItem: selectedItem });
+                                    this.setState({ keyword: '', preSelectedItem: selectedItem });
                                 }}
                                 title={selectButtonText}
                                 backgroundColor={colorTheme}
