@@ -131,12 +131,11 @@ class Select2 extends Component {
             isSelectSingle, cancelButtonText, selectButtonText, searchPlaceHolderText,
             selectedTitleStyle, buttonTextStyle, buttonStyle, showSearchBox
         } = this.props;
-        let { show, selectedItem, preSelectedItem } = this.state;
+        let { selectedItem, preSelectedItem } = this.state;
+        let show = this.props.show || this.state.show;
+        const { ButtonComponent } = this.props;
         return (
-            <TouchableOpacity
-                onPress={this.showModal}
-                activeOpacity={0.7}
-                style={[styles.container, style]}>
+            <>
                 <Modal
                     onBackdropPress={this.closeModal}
                     style={{
@@ -217,42 +216,53 @@ class Select2 extends Component {
                     </Animated.View>
                 </Modal>
                 {
-                    preSelectedItem.length > 0
-                        ? (
-                            isSelectSingle
-                                ? <Text style={[styles.selectedTitlte, this.defaultFont, selectedTitleStyle, { color: '#333' }]}>{preSelectedItem[0].name}</Text>
-                                : <View style={styles.tagWrapper}>
-                                    {
-                                        preSelectedItem.map((tag, index) => {
-                                            return (
-                                                <TagItem
-                                                    key={index}
-                                                    onRemoveTag={() => {
-                                                        let preSelectedItem = [];
-                                                        let selectedIds = [], selectedObjectItems = [];
-                                                        let { data } = this.state;
-                                                        data.map(item => {
-                                                            if (item.id === tag.id) {
-                                                                item.checked = false;
-                                                            }
-                                                            if (item.checked) {
-                                                                preSelectedItem.push(item);
-                                                                selectedIds.push(item.id);
-                                                                selectedObjectItems.push(item);
-                                                            };
-                                                        })
-                                                        this.setState({ data, preSelectedItem });
-                                                        onRemoveItem && onRemoveItem(selectedIds, selectedObjectItems);
-                                                    }}
-                                                    tagName={tag.name} />
-                                            );
-                                        })
-                                    }
-                                </View>
-                        )
-                        : <Text style={[styles.selectedTitlte, this.defaultFont, selectedTitleStyle]}>{title}</Text>
+                    ButtonComponent !== undefined ?
+                        <ButtonComponent />
+                        :
+                        <TouchableOpacity
+                            onPress={this.showModal}
+                            activeOpacity={0.7}
+                            style={[styles.container, style]}>
+
+                            {
+                                preSelectedItem.length > 0
+                                    ? (
+                                        isSelectSingle
+                                            ? <Text style={[styles.selectedTitlte, this.defaultFont, selectedTitleStyle, { color: '#333' }]}>{preSelectedItem[0].name}</Text>
+                                            : <View style={styles.tagWrapper}>
+                                                {
+                                                    preSelectedItem.map((tag, index) => {
+                                                        return (
+                                                            <TagItem
+                                                                key={index}
+                                                                onRemoveTag={() => {
+                                                                    let preSelectedItem = [];
+                                                                    let selectedIds = [], selectedObjectItems = [];
+                                                                    let { data } = this.state;
+                                                                    data.map(item => {
+                                                                        if (item.id === tag.id) {
+                                                                            item.checked = false;
+                                                                        }
+                                                                        if (item.checked) {
+                                                                            preSelectedItem.push(item);
+                                                                            selectedIds.push(item.id);
+                                                                            selectedObjectItems.push(item);
+                                                                        };
+                                                                    })
+                                                                    this.setState({ data, preSelectedItem });
+                                                                    onRemoveItem && onRemoveItem(selectedIds, selectedObjectItems);
+                                                                }}
+                                                                tagName={tag.name} />
+                                                        );
+                                                    })
+                                                }
+                                            </View>
+                                    )
+                                    : <Text style={[styles.selectedTitlte, this.defaultFont, selectedTitleStyle]}>{title}</Text>
+                            }
+                        </TouchableOpacity>
                 }
-            </TouchableOpacity>
+            </>
         );
     }
 }
